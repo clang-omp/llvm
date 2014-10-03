@@ -280,7 +280,11 @@ static Triple::ArchType parseArch(StringRef ArchName) {
     .Case("tce", Triple::tce)
     .Case("xcore", Triple::xcore)
     .Case("nvptx", Triple::nvptx)
+    // FIXME: It would be good to replace these with explicit names for all the
+    // various suffixes supported.
+    .StartsWith("nvptxsm_", Triple::nvptx)
     .Case("nvptx64", Triple::nvptx64)
+    .StartsWith("nvptx64sm_", Triple::nvptx64)
     .Case("le32", Triple::le32)
     .Case("amdil", Triple::amdil)
     .Case("spir", Triple::spir)
