@@ -341,8 +341,14 @@ void Value::replaceAllUsesWith(Value *New) {
   assert(New && "Value::replaceAllUsesWith(<null>) is invalid!");
   assert(!contains(New, this) &&
          "this->replaceAllUsesWith(expr(this)) is NOT valid!");
-  assert(New->getType() == getType() &&
+  // We are allowing replaces are valid for pointers of different address spaces
+  assert((getType()->isPointerTy() || New->getType() == getType()) &&
          "replaceAllUses of value with new value of different type!");
+  assert((!getType()->isPointerTy()
+      || cast<PointerType>(New->getType())->getPointerElementType()
+         == cast<PointerType>(getType())->getPointerElementType())
+      && "replaceAllUses of pointer value with new value of different element "
+         "type!");
 
   // Notify all ValueHandles (if present) that this value is going away.
   if (HasValueHandle)

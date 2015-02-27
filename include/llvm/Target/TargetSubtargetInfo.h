@@ -126,6 +126,10 @@ public:
   /// \brief Reset the features for the subtarget.
   virtual void resetSubtargetFeatures(const MachineFunction *MF) { }
 
+  /// \brief Controls whether linkage and alignments are supposed to be printed
+  /// for functions by the Asm Printer
+  virtual bool allowAsmPrintForFunctionAlignAndLinkage() const {return true;}
+
 };
 
 } // End llvm namespace

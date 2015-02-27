@@ -516,8 +516,11 @@ void AsmPrinter::EmitFunctionHeader() {
       getObjFileLowering().SectionForGlobal(F, *Mang, TM));
   EmitVisibility(CurrentFnSym, F->getVisibility());
 
-  EmitLinkage(F, CurrentFnSym);
-  EmitAlignment(MF->getAlignment(), F);
+  if (TM.getSubtarget<TargetSubtargetInfo>()
+      .allowAsmPrintForFunctionAlignAndLinkage()){
+    EmitLinkage(F, CurrentFnSym);
+    EmitAlignment(MF->getAlignment(), F);
+  }
 
   if (MAI->hasDotTypeDotSizeDirective())
     OutStreamer.EmitSymbolAttribute(CurrentFnSym, MCSA_ELF_TypeFunction);

@@ -109,6 +109,8 @@ public:
 
   NVPTXSubtarget &initializeSubtargetDependencies(StringRef CPU, StringRef FS);
   void ParseSubtargetFeatures(StringRef CPU, StringRef FS);
+
+  bool allowAsmPrintForFunctionAlignAndLinkage() const {return false;}
 };
 
 } // End llvm namespace
