@@ -867,9 +867,20 @@ NVPTXTargetLowering::getPreferredVectorAction(EVT VT) const {
 SDValue
 NVPTXTargetLowering::LowerGlobalAddress(SDValue Op, SelectionDAG &DAG) const {
   SDLoc dl(Op);
-  const GlobalValue *GV = cast<GlobalAddressSDNode>(Op)->getGlobal();
+
+  GlobalAddressSDNode *GN = cast<GlobalAddressSDNode>(Op);
+
+  const GlobalValue *GV = GN->getGlobal();
   Op = DAG.getTargetGlobalAddress(GV, dl, getPointerTy());
-  return DAG.getNode(NVPTXISD::Wrapper, dl, getPointerTy(), Op);
+  Op = DAG.getNode(NVPTXISD::Wrapper, dl, getPointerTy(), Op);
+
+  // We need to consider any offset that comes with the global
+  if (GN->getOffset()){
+    SDValue Offset = DAG.getConstant(GN->getOffset(),getPointerTy());
+    Op = DAG.getNode(ISD::ADD,Op,getPointerTy(),Op,Offset);
+  }
+
+  return Op;
 }
 
 std::string
